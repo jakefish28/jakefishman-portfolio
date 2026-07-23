@@ -501,9 +501,7 @@ nav {
 }
 
 .skills-intro {
-  font-family: var(--font-display);
   font-size: 1.15rem;
-  font-style: italic;
   color: var(--mid-brown);
   line-height: 1.7;
 }
