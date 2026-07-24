@@ -136,6 +136,8 @@ nav {
 .hero {
   position: relative;
   z-index: 1;
+  background: var(--sand);
+  border-bottom: 3px solid var(--clay);
   padding: clamp(72px, 10vh, 120px) clamp(20px, 5vw, 48px) clamp(56px, 7vw, 90px);
 }
 
@@ -202,7 +204,7 @@ nav {
 }
 
 .stat-card {
-  background: var(--sand);
+  background: var(--ecru);
   padding: 28px 26px;
   border-left: 4px solid transparent;
   transition: border-color .2s;
@@ -227,24 +229,6 @@ nav {
 }
 
 .stat-desc { font-size: .8rem; color: var(--mid-brown); margin-top: 6px; line-height: 1.4; }
-
-/* ---- ABOUT STRIP ---- */
-.about-strip {
-  position: relative;
-  z-index: 1;
-  background: var(--green);
-  padding: clamp(56px, 7vw, 88px) clamp(20px, 5vw, 48px);
-}
-
-.about-inner { max-width: 920px; margin: 0 auto; text-align: center; }
-
-.about-inner p {
-  font-size: 1.05rem;
-  color: rgba(245, 240, 232, .78);
-  line-height: 1.8;
-  max-width: 700px;
-  margin: 0 auto;
-}
 
 /* ---- SECTION BASE ---- */
 .section {
