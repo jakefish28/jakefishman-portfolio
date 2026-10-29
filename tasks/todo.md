@@ -1,22 +1,19 @@
-# Implement Jake Fishman Portfolio (from Claude Design)
-
-Source: Claude Design project "Jake's Portfolio Prototype" (`f53455d8-647d-4d36-96c5-26a0152c0495`), file `Jake Fishman Portfolio.dc.html`.
+# Editorial redesign of jakefishman.com (branch: redesign-editorial)
 
 ## Plan
-- [x] Pull design source via DesignSync (project + `.dc.html` content)
-- [x] Attempt to pull real reference images from `.image-slots.state.json` — file exceeds the 256KB `get_file` cap and can't be paginated; the Claude Design site also isn't reachable from this browser session (not logged in). Using styled placeholder tiles with caption labels instead (same fallback look the design already uses), so Jake can drop in real images later.
-- [x] Build `index.html` — semantic markup for all sections (nav, hero/about, about strip, résumé timeline, Concept Art House showcase, Bailey Brand Management showcase, ventures, side projects, skills, life, contact, footer)
-- [x] Build `styles.css` — design tokens (clay/green/ecru palette, Playfair Display/Inter/DM Mono), responsive rules, hover states
-- [x] Build `script.js` — mobile nav toggle, scroll-reveal via IntersectionObserver
-- [x] Serve locally and visually check desktop + mobile
-- [x] Review section below
+- [x] Pull latest live content (site had been edited via Vercel/GitHub since last session)
+- [x] Research reference personal sites (patrickcollison.com, nat.org, paco.me, rauno.me, craigmod.com, sive.rs, frankchimero.com)
+- [x] Audit current site against the brief's constraints
+- [x] Rebuild: one serif (Newsreader), four colors, margin-column ledger grid, no nav/cards/tags/italics/emoji/animation
+- [x] Collapse Resumé + Studio + Brands + Ventures into one reverse-chronological Work ledger
+- [x] Drop Toolkit (skill pills) and the stat-card grid; fold the "I don't specialize" line into the intro
+- [x] Serve images from the repo (Vercel is Git-connected now) instead of jsDelivr
+- [x] Remove script.js (nav toggle + reveal animations no longer exist)
+- [x] Regenerate OG image to match (still centered name, per Jake's earlier request)
+- [x] Verify desktop (1440) and mobile (375): no overflow, spacing, image crops
+- [ ] Jake reviews the Vercel preview, then merge to main
 
 ## Review
-
-Built a static, dependency-free 3-file site (`index.html`, `styles.css`, `script.js`) that faithfully implements every section of the current `.dc.html` design: hero/about stats, résumé timeline, Concept Art House showcase, Bailey Brand Management showcase, Ventures (NADefense/Sight Guard + CaddySpace), side projects, skills toolkit, life/outside, and contact.
-
-**Bug caught during visual QA:** the mobile menu's `display: flex` CSS rule was overriding the `hidden` attribute, so the full-screen nav overlay showed on load at mobile widths. Fixed with an explicit `.mobile-menu[hidden] { display: none; }` rule. Verified fix + hamburger toggle at 375px and full desktop layout at 1440px via the local preview server.
-
-**Images:** the design's `image-slot` reference photos (Diablo 4 key art, celebrity campaign shots, etc.) live in `.image-slots.state.json`, which exceeds the 256KB single-file read cap and can't be paginated, and the live claude.ai/design page isn't reachable from this browser session (not logged in). Used elegant labeled placeholder tiles (matching the design's own fallback style) in their place — drop real photos into an `images/` folder and swap the `.work-thumb`/`.venture-thumb`/`.project-thumb` divs for `<img>` tags whenever those are ready.
-
-No framework/build step — open `index.html` directly or serve the folder with any static file server.
+- Pass 1 bug: `.section > .row + .entry` matched every entry (entries are rows), collapsing the space between them. Fixed with an explicit `.section-label + .entry`.
+- Pass 1 issue: venture photos too dominant (portrait CaddySpace shot ~680px tall). Now 4:3 crops capped at 440px.
+- Content conflict on the old site: the CaddySpace timeline said it recouped its investment in 12 months; the earlier venture card said six months; the newest revision dropped the claim and calls it paused, not sunset. Redesign follows the newest revision and omits the payback figure until Jake confirms it.
