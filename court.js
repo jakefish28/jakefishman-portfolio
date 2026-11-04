@@ -253,12 +253,11 @@ function updateMarks(dt) {
 
 // ---- Scroll-driven camera ----
 // One shot per section: behind the baseline, over the service box, the
-// broadcast view from above, the side camera, net height, and the far end.
+// broadcast view from above, net height, and the far end.
 const shots = [
   { pos: [6.5, 1.8, 18], look: [-1.5, 0.8, 0] },
   { pos: [0, 6.5, 15], look: [0, 0, 2] },
   { pos: [0.6, 30, 7], look: [0, 0, 0] },
-  { pos: [-15, 9, 5], look: [0, 0, -2] },
   { pos: [-7.4, 1.3, 1.6], look: [2.5, 0.9, -3] },
   { pos: [0, 13, -36], look: [0, 0, 1] },
 ].map((s) => ({ pos: new THREE.Vector3(...s.pos), look: new THREE.Vector3(...s.look) }));
