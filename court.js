@@ -12,6 +12,7 @@ const SKY = '#a9cbe0';
 
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const canvas = document.getElementById('court');
+const hero = canvas.parentElement;
 
 let renderer;
 try {
@@ -21,7 +22,7 @@ try {
   throw e;
 }
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, innerWidth < 760 ? 1.5 : 2));
-renderer.setSize(innerWidth, innerHeight);
+renderer.setSize(hero.clientWidth, hero.clientHeight, false);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -30,7 +31,7 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(SKY);
 scene.fog = new THREE.Fog(SKY, 70, 150);
 
-const camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, 0.1, 300);
+const camera = new THREE.PerspectiveCamera(45, hero.clientWidth / hero.clientHeight, 0.1, 300);
 
 scene.add(new THREE.HemisphereLight('#ffffff', '#b8673f', 1.1));
 const sun = new THREE.DirectionalLight('#fff1dc', 2.4);
@@ -200,13 +201,14 @@ function updateRally(dt) {
   if (u >= 1) newShot(shot.end);
 }
 
-// ---- Click to drop a ball ----
+// ---- Click the court to drop a ball ----
 const drops = [];
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
-window.addEventListener('pointerdown', (e) => {
-  if (e.target.closest('a, button, .panel')) return;
-  pointer.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
+hero.addEventListener('pointerdown', (e) => {
+  if (e.target.closest('a, button, .stats')) return;
+  const r = canvas.getBoundingClientRect();
+  pointer.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
   raycaster.setFromCamera(pointer, camera);
   const hit = raycaster.intersectObject(ground)[0];
   if (!hit) return;
@@ -251,82 +253,56 @@ function updateMarks(dt) {
   }
 }
 
-// ---- Scroll-driven camera ----
-// One shot per section: behind the baseline, over the service box, the
-// broadcast view from above, net height, and the far end.
-const shots = [
-  { pos: [6.5, 1.8, 18], look: [-1.5, 0.8, 0] },
-  { pos: [0, 6.5, 15], look: [0, 0, 2] },
-  { pos: [0.6, 30, 7], look: [0, 0, 0] },
-  { pos: [-7.4, 1.3, 1.6], look: [2.5, 0.9, -3] },
-  { pos: [0, 13, -36], look: [0, 0, 1] },
-].map((s) => ({ pos: new THREE.Vector3(...s.pos), look: new THREE.Vector3(...s.look) }));
-const posCurve = new THREE.CatmullRomCurve3(shots.map((s) => s.pos));
-const lookCurve = new THREE.CatmullRomCurve3(shots.map((s) => s.look));
-
-const sections = [...document.querySelectorAll('[data-score]')];
-let tops = [];
-const measure = () => { tops = sections.map((s) => s.offsetTop); };
-measure();
-
-function scrollProgress() {
-  const y = scrollY + innerHeight * 0.4;
-  let i = 0;
-  while (i < tops.length - 1 && y >= tops[i + 1]) i++;
-  if (i === tops.length - 1) return 1;
-  const t = Math.min(Math.max((y - tops[i]) / (tops[i + 1] - tops[i]), 0), 1);
-  const eased = t * t * (3 - 2 * t);
-  return (i + eased) / (tops.length - 1);
-}
+// ---- Camera ----
+// Behind the baseline at rest; as the hero scrolls away the camera rises
+// toward the broadcast view from above.
+const START = { pos: new THREE.Vector3(6.5, 1.8, 18), look: new THREE.Vector3(-1.5, 0.8, 0) };
+const END = { pos: new THREE.Vector3(0.6, 24, 9), look: new THREE.Vector3(0, 0, 0) };
 
 const mouse = new THREE.Vector2();
-window.addEventListener('pointermove', (e) => {
+hero.addEventListener('pointermove', (e) => {
   mouse.set((e.clientX / innerWidth) * 2 - 1, (e.clientY / innerHeight) * 2 - 1);
 });
 
-const camPos = posCurve.getPoint(0);
-const camLook = lookCurve.getPoint(0);
+const camPos = START.pos.clone();
+const camLook = START.look.clone();
+const target = new THREE.Vector3();
+const targetLook = new THREE.Vector3();
 function updateCamera(dt) {
-  const p = scrollProgress();
-  const k = reduceMotion ? 1 : 1 - Math.exp(-dt * 4);
-  camPos.lerp(posCurve.getPoint(p), k);
-  camLook.lerp(lookCurve.getPoint(p), k);
+  const p = Math.min(Math.max(-hero.getBoundingClientRect().top / hero.offsetHeight, 0), 1);
+  const t = p * p * (3 - 2 * p);
+  target.lerpVectors(START.pos, END.pos, t);
+  targetLook.lerpVectors(START.look, END.look, t);
+  const k = reduceMotion ? 1 : 1 - Math.exp(-dt * 5);
+  camPos.lerp(target, k);
+  camLook.lerp(targetLook, k);
   camera.position.copy(camPos);
   if (!reduceMotion) camera.position.add(new THREE.Vector3(mouse.x * 0.6, -mouse.y * 0.3, 0));
   camera.lookAt(camLook);
 }
 
-// ---- Scoreboard rail ----
-const rail = document.querySelector('.score');
-const items = sections.map((s) => {
-  const li = document.createElement('li');
-  li.innerHTML = `<a href="#${s.id}"><b>${s.dataset.score}</b><span>${s.dataset.label}</span></a>`;
-  rail.appendChild(li);
-  return li;
-});
-const io = new IntersectionObserver((entries) => {
-  for (const e of entries) {
-    if (!e.isIntersecting) continue;
-    items.forEach((li, i) => li.classList.toggle('on', sections[i] === e.target));
-  }
-}, { rootMargin: '-45% 0px -55% 0px' });
-sections.forEach((s) => io.observe(s));
-
-// ---- Loop ----
-window.addEventListener('resize', () => {
-  camera.aspect = innerWidth / innerHeight;
+// ---- Loop: only render while the hero is on screen ----
+function resize() {
+  camera.aspect = hero.clientWidth / hero.clientHeight;
   camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth, innerHeight);
-  measure();
-});
-window.addEventListener('load', measure);
+  renderer.setSize(hero.clientWidth, hero.clientHeight, false);
+}
+window.addEventListener('resize', resize);
 
 const clock = new THREE.Clock();
-renderer.setAnimationLoop(() => {
+function frame() {
   const dt = Math.min(clock.getDelta(), 0.05);
   if (!reduceMotion) updateRally(dt);
   updateDrops(dt);
   updateMarks(dt);
   updateCamera(dt);
   renderer.render(scene, camera);
-});
+}
+new IntersectionObserver(([entry]) => {
+  if (entry.isIntersecting) {
+    clock.getDelta();
+    renderer.setAnimationLoop(frame);
+  } else {
+    renderer.setAnimationLoop(null);
+  }
+}).observe(hero);

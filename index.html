@@ -21,123 +21,156 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles.css" />
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js" } }</script>
 <script type="module" src="court.js"></script>
+<script type="module" src="site.js"></script>
 <script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
 </head>
 <body>
 
-<canvas id="court" aria-hidden="true"></canvas>
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a href="#top" class="brand">Jake Fishman</a>
+    <nav aria-label="Main">
+      <a href="#building">Building</a>
+      <a href="#sales">Sales &amp; partnerships</a>
+      <a href="#background">Background</a>
+      <a href="#contact" class="cta">Contact</a>
+    </nav>
+  </div>
+</header>
 
-<nav aria-label="Sections"><ol class="score"></ol></nav>
+<nav class="rail" aria-label="Progress"><ol class="score"></ol></nav>
 
-<main>
-
-  <section id="top" class="hero" data-score="0" data-label="Intro">
+<section id="top" class="hero" data-score="0" data-label="Intro">
+  <canvas id="court" aria-hidden="true"></canvas>
+  <div class="wrap hero-content">
     <h1>Jake Fishman</h1>
     <p class="tagline">Founder and builder with a career in sales and partnerships.</p>
     <dl class="stats">
       <div><dt>$150M+</dt><dd>celebrity brand deals</dd></div>
-      <div><dt>$10M+</dt><dd>in game studio bookings</dd></div>
+      <div><dt>$10M+</dt><dd>game studio bookings</dd></div>
       <div><dt>200+</dt><dd>partnerships</dd></div>
       <div><dt>2</dt><dd>companies founded</dd></div>
     </dl>
-    <p class="hero-links"><a href="#building">See what I’ve built</a><a href="#contact">Get in touch</a></p>
-    <p class="hint">Click the court to drop a ball</p>
-  </section>
+    <p class="hero-links"><a href="#building" class="btn">See what I’ve built</a><a href="#contact" class="btn btn-ghost">Get in touch</a></p>
+  </div>
+  <p class="hint">Click the court to drop a ball</p>
+</section>
 
-  <section id="building" data-score="15" data-label="Building">
-    <div class="panel">
-      <p class="kicker">15 · Building</p>
-      <h2>Founder and builder</h2>
-      <p class="lead">Two companies started from an idea, plus the apps I build for my own household. I don’t specialize: brand strategy, technical operations, and product, usually at the same time.</p>
+<main>
 
-      <article>
-        <p class="when">2026 to now</p>
-        <h3>NADefense</h3>
-        <p class="role">Co-founder</p>
-        <p>A direct-to-consumer eye-health brand built around Sight Guard, an ophthalmologist-formulated supplement. Product development, ingredient compliance, marketing, paid acquisition, physician and influencer partnerships, customer service, and analytics all run in house, with fulfillment through a third-party logistics partner.</p>
+  <section id="building" class="section" data-score="15" data-label="Building">
+    <div class="wrap">
+      <header class="section-head">
+        <p class="kicker">15 · Building</p>
+        <h2>Founder and builder</h2>
+        <p class="lead">Two companies started from an idea, plus the apps I build for my own household. I don’t specialize: brand strategy, technical operations, and product, usually at the same time.</p>
+      </header>
+
+      <article class="item">
+        <div class="item-text">
+          <p class="meta">Co-founder · 2026 to now</p>
+          <h3>NADefense</h3>
+          <p>A direct-to-consumer eye-health brand built around Sight Guard, an ophthalmologist-formulated supplement. Product development, ingredient compliance, marketing, paid acquisition, physician and influencer partnerships, customer service, and analytics all run in house, with fulfillment through a third-party logistics partner.</p>
+          <p><a class="more" href="https://nadefense.com">Visit nadefense.com</a></p>
+        </div>
         <img src="images/nadefense.jpeg" alt="Sight Guard bottles from NADefense" loading="lazy">
-        <p><a href="https://nadefense.com">nadefense.com</a></p>
       </article>
 
-      <article>
-        <p class="when">2024 to 2026</p>
-        <h3>CaddySpace</h3>
-        <p class="role">Founder, now paused</p>
-        <p>A golf course advertising platform that turned golf cart GPS screens into premium digital ad inventory. I came up with the concept, brought in two friends to help build it, and led product strategy, go to market, and early customer acquisition. We landed both local and national advertisers.</p>
+      <article class="item">
+        <div class="item-text">
+          <p class="meta">Founder · 2024 to 2026 · Paused</p>
+          <h3>CaddySpace</h3>
+          <p>A golf course advertising platform that turned golf cart GPS screens into premium digital ad inventory. I came up with the concept, brought in two friends to help build it, and led product strategy, go to market, and early customer acquisition. We landed both local and national advertisers.</p>
+          <p><a class="more" href="https://caddyspace.com">Visit caddyspace.com</a></p>
+        </div>
         <img src="images/caddyspace.jpeg" alt="A CaddySpace ad running on a golf cart GPS screen" loading="lazy">
-        <p><a href="https://caddyspace.com">caddyspace.com</a></p>
       </article>
 
-      <article>
-        <p class="when">Now</p>
-        <h3>Side projects</h3>
-        <p class="role">Prototypes</p>
-        <p>Small apps I’m building for my own household, half product practice, half solving problems I actually have.</p>
-        <ul class="grid">
-          <li><img src="images/family-cooking-app.png" alt="Family cooking app prototype" loading="lazy"><span>Family cooking app: a shared recipe box with weekly meal planning and grocery lists. Liat asked for it.</span></li>
-          <li><img src="images/house-manager.png" alt="House manager app prototype" loading="lazy"><span>House manager: maintenance schedules, warranties, vendors, and recurring to-dos. Built for the move to Tampa.</span></li>
+      <article class="item item-stack">
+        <div class="item-text">
+          <p class="meta">Side projects · Prototypes</p>
+          <h3>Apps for my own household</h3>
+          <p>Half product practice, half solving problems I actually have.</p>
+        </div>
+        <ul class="grid grid-2">
+          <li><img src="images/family-cooking-app.png" alt="Family cooking app prototype" loading="lazy"><h4>Family cooking app</h4><p>A shared recipe box with weekly meal planning and grocery lists. Liat asked for it.</p></li>
+          <li><img src="images/house-manager.png" alt="House manager app prototype" loading="lazy"><h4>House manager</h4><p>Maintenance schedules, warranties, vendors, and recurring to-dos. Built for the move to Tampa.</p></li>
         </ul>
       </article>
     </div>
   </section>
 
-  <section id="sales" data-score="30" data-label="Sales &amp; partnerships">
-    <div class="panel">
-      <p class="kicker">30 · Sales &amp; partnerships</p>
-      <h2>Closing deals and running partnerships</h2>
-      <p class="lead">More than 200 partnerships, from agencies to golf courses to gaming studios. I find the deal, structure it, close it, and make sure the work gets delivered.</p>
+  <section id="sales" class="section" data-score="30" data-label="Sales &amp; partnerships">
+    <div class="wrap">
+      <header class="section-head">
+        <p class="kicker">30 · Sales &amp; partnerships</p>
+        <h2>Closing deals and running partnerships</h2>
+        <p class="lead">More than 200 partnerships, from agencies to golf courses to gaming studios. I find the deal, structure it, close it, and make sure the work gets delivered.</p>
+      </header>
 
-      <article>
-        <p class="when">2022 to now</p>
-        <h3>Concept Art House</h3>
-        <p class="role">Director of Business Development &amp; Operations</p>
-        <p>I joined as Partnerships Operations Manager. Since then I’ve helped land and deliver more than $10M in bookings for some of the biggest titles and platforms in games and Web3, running partnerships, deal structure, and production operations.</p>
-        <ul class="grid">
-          <li><img src="images/diablo4.jpg" alt="Diablo 4 key art" loading="lazy"><span>Diablo 4 · Blizzard</span></li>
-          <li><img src="images/codm-mobile.jpg" alt="Call of Duty: Mobile key art" loading="lazy"><span>Call of Duty: Mobile · Activision</span></li>
-          <li><img src="images/ark2.jpg" alt="Ark 2 key art" loading="lazy"><span>Ark 2 · Studio Wildcard</span></li>
-          <li><img src="images/nfl-all-day.jpg" alt="NFL All Day collectible art" loading="lazy"><span>NFL All Day · Dapper Labs</span></li>
+      <article class="item item-stack">
+        <div class="item-text">
+          <p class="meta">Director of Business Development &amp; Operations · 2022 to now</p>
+          <h3>Concept Art House</h3>
+          <p>I joined as Partnerships Operations Manager. Since then I’ve helped land and deliver more than $10M in bookings for some of the biggest titles and platforms in games and Web3, running partnerships, deal structure, and production operations.</p>
+        </div>
+        <ul class="grid grid-4">
+          <li><img src="images/diablo4.jpg" alt="Diablo 4 key art" loading="lazy"><h4>Diablo 4</h4><p>Blizzard</p></li>
+          <li><img src="images/codm-mobile.jpg" alt="Call of Duty: Mobile key art" loading="lazy"><h4>Call of Duty: Mobile</h4><p>Activision</p></li>
+          <li><img src="images/ark2.jpg" alt="Ark 2 key art" loading="lazy"><h4>Ark 2</h4><p>Studio Wildcard</p></li>
+          <li><img src="images/nfl-all-day.jpg" alt="NFL All Day collectible art" loading="lazy"><h4>NFL All Day</h4><p>Dapper Labs</p></li>
         </ul>
       </article>
 
-      <article>
-        <p class="when">2018 to 2022 · Los Angeles</p>
-        <h3>Bailey Brand Management</h3>
-        <p class="role">Coordinator to Operations Manager</p>
-        <p>I joined straight out of UCLA. We negotiated deals between talent and brands and delivered the work, from commercials and social to personal appearances and PR, more than $150M in celebrity brand deals in all.</p>
-        <ul class="grid">
-          <li><img src="images/happy-dance.jpeg" alt="Happy Dance campaign with Kristen Bell" loading="lazy"><span>Happy Dance · Kristen Bell</span></li>
-          <li><img src="images/nissan.jpeg" alt="Nissan campaign with Brie Larson" loading="lazy"><span>Nissan · Brie Larson</span></li>
-          <li><img src="images/boss-coffee.jpeg" alt="Boss Coffee campaign with Tommy Lee Jones" loading="lazy"><span>Boss Coffee · Tommy Lee Jones</span></li>
-          <li><img src="images/hello-bello.jpeg" alt="Hello Bello with Kristen Bell and Dax Shepard" loading="lazy"><span>Hello Bello · Kristen Bell &amp; Dax Shepard</span></li>
+      <article class="item item-stack">
+        <div class="item-text">
+          <p class="meta">Coordinator to Operations Manager · 2018 to 2022 · Los Angeles</p>
+          <h3>Bailey Brand Management</h3>
+          <p>I joined straight out of UCLA. We negotiated deals between talent and brands and delivered the work, from commercials and social to personal appearances and PR, more than $150M in celebrity brand deals in all.</p>
+        </div>
+        <ul class="grid grid-4">
+          <li><img src="images/happy-dance.jpeg" alt="Happy Dance campaign with Kristen Bell" loading="lazy"><h4>Happy Dance</h4><p>Kristen Bell</p></li>
+          <li><img src="images/nissan.jpeg" alt="Nissan campaign with Brie Larson" loading="lazy"><h4>Nissan</h4><p>Brie Larson</p></li>
+          <li><img src="images/boss-coffee.jpeg" alt="Boss Coffee campaign with Tommy Lee Jones" loading="lazy"><h4>Boss Coffee</h4><p>Tommy Lee Jones</p></li>
+          <li><img src="images/hello-bello.jpeg" alt="Hello Bello with Kristen Bell and Dax Shepard" loading="lazy"><h4>Hello Bello</h4><p>Kristen Bell &amp; Dax Shepard</p></li>
         </ul>
       </article>
     </div>
   </section>
 
-  <section id="background" data-score="40" data-label="Background">
-    <div class="panel">
-      <p class="kicker">40 · Background</p>
-      <h2>Off the court, and on it</h2>
-      <p class="lead">Tennis is the obsession. The dream is a clay-court match somewhere in the South of France.</p>
-      <p>I grew up in Orlando and studied economics at UCLA, with a minor in Environmental Systems &amp; Sustainability. I stayed in Los Angeles until my wife, Liat, started her medical residency in Chattanooga. We’re home in Tampa now with our first child, Izzy. I finished the Chattanooga Ironman 70.3 in May 2026, and I’ve been to more than 40 countries.</p>
+  <section id="background" class="section" data-score="40" data-label="Background">
+    <div class="wrap">
+      <header class="section-head">
+        <p class="kicker">40 · Background</p>
+        <h2>Off the court, and on it</h2>
+        <p class="lead">Tennis is the obsession. The dream is a clay-court match somewhere in the South of France.</p>
+      </header>
+      <div class="two-col">
+        <p>I grew up in Orlando and studied economics at UCLA, with a minor in Environmental Systems &amp; Sustainability. I stayed in Los Angeles until my wife, Liat, started her medical residency in Chattanooga.</p>
+        <p>We’re home in Tampa now with our first child, Izzy. I finished the Chattanooga Ironman 70.3 in May 2026, and I’ve been to more than 40 countries.</p>
+      </div>
     </div>
   </section>
 
-  <section id="contact" data-score="GAME" data-label="Contact">
-    <div class="panel">
-      <p class="kicker">Game · Contact</p>
-      <h2>Let’s talk</h2>
-      <p>New venture, partnership, or a role where building and selling go together.</p>
+  <section id="contact" class="section contact" data-score="GAME" data-label="Contact">
+    <div class="wrap">
+      <header class="section-head">
+        <p class="kicker">Game · Contact</p>
+        <h2>Let’s talk</h2>
+        <p class="lead">New venture, partnership, or a role where building and selling go together.</p>
+      </header>
       <p class="email"><a href="mailto:jhfish0528@gmail.com">jhfish0528@gmail.com</a></p>
-      <p><a href="https://www.linkedin.com/in/jfish28/">LinkedIn</a> · <a href="https://x.com/Jfish28">X</a> · <a href="tel:+14075626244">407 562 6244</a></p>
+      <p class="contact-links"><a href="https://www.linkedin.com/in/jfish28/">LinkedIn</a><a href="https://x.com/Jfish28">X</a><a href="tel:+14075626244">407 562 6244</a></p>
     </div>
   </section>
 
 </main>
+
+<footer class="wrap footer">Jake Fishman · Tampa, Florida</footer>
+
 </body>
 </html>
