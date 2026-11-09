@@ -19,5 +19,13 @@ sections.forEach((s) => io.observe(s));
 // The top bar appears once the hero has scrolled away.
 const header = document.querySelector('.topbar');
 new IntersectionObserver(([e]) => {
-  header.classList.toggle('show', !e.isIntersecting);
+  header.classList.toggle('show', e.intersectionRatio < 0.15);
 }, { threshold: 0.15 }).observe(document.querySelector('.hero'));
+
+// The 3D court is decoration: load it after the page has painted so the text
+// and links are ready first. If it can't load, the hero stays solid clay.
+const loadCourt = () => import('./court.js').catch(() => document.body.classList.add('no-webgl'));
+addEventListener('load', () => {
+  if ('requestIdleCallback' in window) requestIdleCallback(loadCourt, { timeout: 1500 });
+  else setTimeout(loadCourt, 200);
+});

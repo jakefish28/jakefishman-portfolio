@@ -11,12 +11,16 @@
   --pad: clamp(20px, 5vw, 48px);
 }
 
+/* Stand-ins sized to match Barlow, so text doesn't jump when the fonts arrive. */
+@font-face { font-family: 'Barlow Condensed Fallback'; src: local('Arial Bold'), local('Arial-BoldMT'), local('Roboto Bold'); font-weight: 700; size-adjust: 69.4%; }
+@font-face { font-family: 'Barlow Fallback'; src: local('Arial'), local('ArialMT'), local('Roboto'); size-adjust: 96%; }
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html {
   background: var(--bg);
   color: var(--cream);
-  font-family: 'Barlow', system-ui, sans-serif;
+  font-family: 'Barlow', 'Barlow Fallback', system-ui, sans-serif;
   font-size: 18px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
@@ -26,13 +30,12 @@ html {
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
 a { color: inherit; text-underline-offset: 0.2em; }
-a:hover { color: var(--ball); }
 a:focus-visible { outline: 2px solid var(--ball); outline-offset: 3px; }
 img { display: block; max-width: 100%; }
 ul, ol { list-style: none; }
 
 h1, h2, h3, h4, .kicker, .brand, .btn, .stats dt, .score b {
-  font-family: 'Barlow Condensed', system-ui, sans-serif;
+  font-family: 'Barlow Condensed', 'Barlow Condensed Fallback', system-ui, sans-serif;
 }
 
 .wrap {
@@ -60,21 +63,23 @@ h1, h2, h3, h4, .kicker, .brand, .btn, .stats dt, .score b {
 .topbar nav { display: flex; align-items: center; gap: 28px; font-size: 0.95rem; font-weight: 500; }
 .topbar nav a { text-decoration: none; }
 .topbar .cta { background: var(--clay); color: var(--cream); padding: 8px 16px; }
-.topbar .cta:hover { background: var(--ball); color: var(--bg); }
 
 /* ---- Hero: the court lives only here ---- */
 .hero {
   position: relative;
-  height: 100vh;
-  height: 100svh;
-  min-height: 620px;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding-top: 72px;
   overflow: hidden;
   background: #b9542b;
   display: flex;
   align-items: flex-end;
   padding-bottom: clamp(56px, 10vh, 110px);
 }
-#court { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+#court { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: 0; transition: opacity 0.5s ease; }
+#court.ready { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { #court { transition: none; } }
+.no-webgl .hint { display: none; }
 /* Fade the court into the page so the hand-off feels continuous. */
 .hero::after {
   content: '';
@@ -104,15 +109,16 @@ h1 {
 
 .stats {
   display: grid;
-  grid-template-columns: repeat(4, auto);
-  width: fit-content;
+  grid-template-columns: repeat(4, 1fr);
+  max-width: 920px;
   gap: 2px;
   margin-top: 28px;
   background: var(--line);
 }
 .stats div { background: var(--bg); padding: 14px 22px; }
 .stats dt { font-size: clamp(1.7rem, 2.8vw, 2.5rem); font-weight: 700; line-height: 1; color: var(--ball); }
-.stats dd { font-size: 0.85rem; margin-top: 6px; color: var(--soft); }
+.stats dd { font-size: 0.95rem; font-weight: 600; margin-top: 6px; color: var(--cream); line-height: 1.3; }
+.stats small { display: block; font-size: 0.8rem; font-weight: 400; margin-top: 4px; color: var(--soft); }
 
 .hero-links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
 .btn {
@@ -126,7 +132,6 @@ h1 {
   background: var(--cream);
   color: var(--bg);
 }
-.btn:hover { background: var(--ball); color: var(--bg); }
 .btn-ghost { background: rgba(12, 42, 29, 0.55); color: var(--cream); box-shadow: inset 0 0 0 2px var(--cream); }
 
 .hint {
@@ -147,7 +152,7 @@ h1 {
 
 .section-head { max-width: 780px; margin-bottom: clamp(36px, 5vw, 56px); }
 .kicker {
-  color: var(--clay);
+  color: #e87c4c;
   font-size: 1.05rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -196,7 +201,7 @@ h3 {
 .timeline p:last-child { color: var(--soft); }
 
 /* Studio and brand cards */
-.cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+.cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
 .cards li { background: var(--surface); }
 .cards img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
 .cards h3 { font-size: 1.2rem; padding: 14px 16px 2px; }
@@ -224,7 +229,7 @@ h3 {
 
 /* Side projects */
 .projects { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-.project { display: grid; grid-template-columns: 160px 1fr; gap: 24px; background: var(--surface); padding: 20px; align-items: start; }
+.project { display: grid; grid-template-columns: 200px 1fr; gap: 24px; background: var(--surface); padding: 20px; align-items: start; }
 .project img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; object-position: top; }
 .project h3 { font-size: 1.6rem; margin: 10px 0 8px; }
 .project p:last-child { color: var(--soft); }
@@ -236,7 +241,6 @@ h3 {
 .skill-groups h3 { font-size: 1.1rem; letter-spacing: 0.06em; color: var(--ball); border-bottom: 2px solid var(--line); padding-bottom: 8px; margin-bottom: 14px; }
 .tags { display: flex; flex-wrap: wrap; gap: 8px; }
 .tags li { border: 1.5px solid var(--line); padding: 6px 14px; font-size: 0.95rem; transition: background 0.2s, border-color 0.2s; }
-.tags li:hover { background: var(--clay); border-color: var(--clay); }
 
 /* Outside the office */
 .life { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
@@ -248,7 +252,9 @@ h3 {
 /* Contact */
 .contact { text-align: center; }
 .contact .lead { max-width: 560px; margin: 0 auto; }
-.contact-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 36px; }
+.contact-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-top: 36px; }
+.icon-link { display: grid; place-items: center; width: 60px; height: 60px; background: var(--cream); color: var(--bg); transition: background 0.2s; }
+.icon-link svg { width: 26px; height: 26px; fill: currentColor; }
 
 .footer { display: flex; justify-content: space-between; gap: 16px; padding-top: 28px; padding-bottom: 36px; color: var(--soft); font-size: 0.9rem; border-top: 1px solid var(--line); }
 
@@ -268,20 +274,26 @@ h3 {
 .rail:hover .score span { max-width: 12em; }
 @media (max-width: 1400px) { .rail { display: none; } }
 
+/* Hover only where there's a real pointer, so colors don't stick after a tap. */
+@media (hover: hover) {
+  a:hover { color: var(--ball); }
+  .topbar .cta:hover, .btn:hover, .icon-link:hover { background: var(--ball); color: var(--bg); }
+  .tags li:hover { background: var(--clay); border-color: var(--clay); }
+}
+
 /* ---- Small screens ---- */
 @media (max-width: 1040px) {
-  .cards { grid-template-columns: repeat(3, 1fr); }
   .life { grid-template-columns: repeat(2, 1fr); }
   .projects { grid-template-columns: 1fr; }
 }
 @media (max-width: 860px) {
   .topbar nav a:not(.cta) { display: none; }
+  .stats { grid-template-columns: 1fr 1fr; }
   .ventures, .skills { grid-template-columns: 1fr; }
   .cards { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 560px) {
   html { font-size: 17px; }
-  .stats { grid-template-columns: 1fr 1fr; width: 100%; }
   .stats div { padding: 12px 14px; }
   .hint { display: none; }
   .life { grid-template-columns: 1fr; }

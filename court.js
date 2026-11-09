@@ -37,7 +37,8 @@ scene.add(new THREE.HemisphereLight('#ffffff', '#b8673f', 1.1));
 const sun = new THREE.DirectionalLight('#fff1dc', 2.4);
 sun.position.set(-18, 34, 14);
 sun.castShadow = true;
-sun.shadow.mapSize.set(2048, 2048);
+const shadowSize = innerWidth < 760 ? 1024 : 2048;
+sun.shadow.mapSize.set(shadowSize, shadowSize);
 Object.assign(sun.shadow.camera, { left: -30, right: 30, top: 30, bottom: -30, near: 1, far: 90 });
 scene.add(sun);
 
@@ -205,7 +206,8 @@ function updateRally(dt) {
 const drops = [];
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
-hero.addEventListener('pointerdown', (e) => {
+// A click, not pointerdown, so starting a scroll on a phone doesn't drop a ball.
+hero.addEventListener('click', (e) => {
   if (e.target.closest('a, button, .stats')) return;
   const r = canvas.getBoundingClientRect();
   pointer.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
@@ -261,6 +263,7 @@ const END = { pos: new THREE.Vector3(0.6, 24, 9), look: new THREE.Vector3(0, 0, 
 
 const mouse = new THREE.Vector2();
 hero.addEventListener('pointermove', (e) => {
+  if (e.pointerType !== 'mouse') return;
   mouse.set((e.clientX / innerWidth) * 2 - 1, (e.clientY / innerHeight) * 2 - 1);
 });
 
@@ -282,12 +285,23 @@ function updateCamera(dt) {
 }
 
 // ---- Loop: only render while the hero is on screen ----
-function resize() {
-  camera.aspect = hero.clientWidth / hero.clientHeight;
+// Watches the hero itself, so a phone's address bar sliding away doesn't clear
+// the canvas and cause a flicker.
+let heroW = hero.clientWidth;
+let heroH = hero.clientHeight;
+new ResizeObserver(() => {
+  if (hero.clientWidth === heroW && hero.clientHeight === heroH) return;
+  heroW = hero.clientWidth;
+  heroH = hero.clientHeight;
+  camera.aspect = heroW / heroH;
   camera.updateProjectionMatrix();
-  renderer.setSize(hero.clientWidth, hero.clientHeight, false);
-}
-window.addEventListener('resize', resize);
+  renderer.setSize(heroW, heroH, false);
+  renderer.render(scene, camera);
+}).observe(hero);
+
+updateCamera(0);
+renderer.render(scene, camera);
+canvas.classList.add('ready');
 
 const clock = new THREE.Clock();
 function frame() {
